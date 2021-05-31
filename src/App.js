@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Modal from "./components/Modal";
 import axios from "axios";
+axios.defaults.baseURL = 'https://dlintin-django-react-backend.zeet.app';
 
 class App extends Component {
   constructor(props) {
