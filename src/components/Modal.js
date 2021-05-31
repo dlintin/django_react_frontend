@@ -61,6 +61,17 @@ export default class CustomModal extends Component {
                 placeholder="Enter Todo description"
               />
             </FormGroup>
+            <FormGroup>
+              <Label for="todo-description">Date</Label>
+              <Input
+                type="date"
+                id="todo-date"
+                name="date"
+                value={this.state.activeItem.date}
+                onChange={this.handleChange}
+                placeholder="dd/mm/yy"
+              />
+            </FormGroup>
             <FormGroup check>
               <Label check>
                 <Input
