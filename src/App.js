@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Modal from "./components/Modal";
+import LoginModal from "./components/LoginModal"
 import axios from "axios";
 axios.defaults.baseURL = 'https://dlintin-django-react-backend.zeet.app';
 
@@ -9,22 +10,40 @@ class App extends Component {
     this.state = {
       viewCompleted: false,
       todoList: [],
+     token: "",
+      loginModal : false,
       modal: false,
       activeItem: {
         title: "",
         description: "",
         completed: false,
       },
+      login: {
+        username: "",
+        password: "",
+      },
     };
   }
 
   componentDidMount() {
+    const token = this.getToken();
+    console.log("a",token)
+  if(!token) {
+    this.setState({loginModal : true});
+  }else{
     this.refreshList();
+  }
+    
   }
 
   refreshList = () => {
     axios
-      .get("/api/todos/")
+      .get("/api/todos/",{
+        headers: {
+            'authorization': this.getToken(),
+            
+        }
+    })
       .then((res) => this.setState({ todoList: res.data }))
       .catch((err) => console.log(err));
   };
@@ -32,24 +51,63 @@ class App extends Component {
   toggle = () => {
     this.setState({ modal: !this.state.modal });
   };
+  loginToggle = () => {
+    this.setState({ loginModal: !this.state.loginModal });
+  };
 
   handleSubmit = (item) => {
     this.toggle();
 
     if (item.id) {
       axios
-        .put(`/api/todos/${item.id}/`, item)
+        .put(`/api/todos/${item.id}/`, item, {
+          headers: {
+              'authorization': this.state.token,
+              
+          }
+      })
         .then((res) => this.refreshList());
       return;
     }
     axios
-      .post("/api/todos/", item)
+      .post("/api/todos/", item,{
+        headers: {
+            'authorization': this.state.token,
+            
+        }
+    })
       .then((res) => this.refreshList());
   };
+ 
+  handleSubmitLogin = (item) => {
+    axios
+      .post("/token-auth/", item)
+      .then((res) => this.setToken(res.data.token,res.data.user));
+
+
+  };
+  setToken(userToken,userData) {
+    sessionStorage.setItem('token', JSON.stringify(userToken));
+    sessionStorage.setItem('user', JSON.stringify(userData));
+    this.setState({token : userToken})
+    this.loginToggle()
+  }
+
+  
+  getToken() {
+    const tokenString = sessionStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+    return userToken
+  }
 
   handleDelete = (item) => {
     axios
-      .delete(`/api/todos/${item.id}/`)
+      .delete(`/api/todos/${item.id}/`,{
+        headers: {
+            'authorization': this.state.token,
+            
+        }
+    })
       .then((res) => this.refreshList());
   };
 
@@ -73,6 +131,7 @@ class App extends Component {
 
   renderTabList = () => {
     return (
+      
       <div className="nav nav-tabs">
         <span
           onClick={() => this.displayCompleted(true)}
@@ -130,6 +189,7 @@ class App extends Component {
   render() {
     return (
       <main className="container">
+        
         <h1 className="text-white text-uppercase text-center my-4">Todo app</h1>
         <div className="row">
           <div className="col-md-6 col-sm-10 mx-auto p-0">
@@ -154,6 +214,13 @@ class App extends Component {
             activeItem={this.state.activeItem}
             toggle={this.toggle}
             onSave={this.handleSubmit}
+          />
+        ) : null}
+        {this.state.loginModal ? (
+          <LoginModal
+            login={this.state.login}
+            toggle={this.toggle}
+            onSave={this.handleSubmitLogin}
           />
         ) : null}
       </main>

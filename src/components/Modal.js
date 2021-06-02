@@ -10,14 +10,27 @@ import {
   Input,
   Label,
 } from "reactstrap";
+import axios from "axios";
 
 export default class CustomModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeItem: this.props.activeItem,
+      userLists : []
     };
   }
+  componentDidMount() {
+    this.userList();
+  }
+
+  userList = () => {
+    axios
+      .get("/api/users/")
+      .then((res) => this.setState({ userLists: res.data }))
+      .catch((err) => console.log(err));
+      
+  };
 
   handleChange = (e) => {
     let { name, value } = e.target;
@@ -32,8 +45,8 @@ export default class CustomModal extends Component {
   };
 
   render() {
-    const { toggle, onSave } = this.props;
-
+    const { toggle, onSave,userLists } = this.props;
+ 
     return (
       <Modal isOpen={true} toggle={toggle}>
         <ModalHeader toggle={toggle}>Todo Item</ModalHeader>
@@ -71,6 +84,19 @@ export default class CustomModal extends Component {
                 onChange={this.handleChange}
                 placeholder="dd/mm/yy"
               />
+            </FormGroup>
+            <FormGroup>
+              <Label for="todo-description">Assign To</Label>
+              <Input type="select" name="select" id="exampleSelect">
+              {this.state.userLists.map(team => (
+            <option
+              key={team.id}
+              value={team.username}
+            >
+              {team.username}
+            </option>
+          ))}
+        </Input>
             </FormGroup>
             <FormGroup check>
               <Label check>
