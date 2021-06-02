@@ -10,14 +10,12 @@ import {
   Input,
   Label,
 } from "reactstrap";
-import axios from "axios";
 
 export default class CustomModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeItem: this.props.login,
-      userLists : []
     };
   }
 
@@ -34,7 +32,7 @@ export default class CustomModal extends Component {
   };
 
   render() {
-    const { toggle, onSave } = this.props;
+    const { onSave } = this.props;
  
     return (
       <Modal isOpen={true} >

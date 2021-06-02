@@ -38,12 +38,7 @@ class App extends Component {
 
   refreshList = () => {
     axios
-      .get("/api/todos/",{
-        headers: {
-            'authorization': this.getToken(),
-            
-        }
-    })
+      .get("/api/todos/")
       .then((res) => this.setState({ todoList: res.data }))
       .catch((err) => console.log(err));
   };
@@ -90,6 +85,7 @@ class App extends Component {
     sessionStorage.setItem('token', JSON.stringify(userToken));
     sessionStorage.setItem('user', JSON.stringify(userData));
     this.setState({token : userToken})
+    axios.defaults.headers.common = {'Authorization': `Bearer ${this.state.token}`}
     this.loginToggle()
   }
 
