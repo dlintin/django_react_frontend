@@ -24,6 +24,7 @@ class App extends Component {
       },
     };
   }
+  
 
   componentDidMount() {
     const token = this.getToken();
