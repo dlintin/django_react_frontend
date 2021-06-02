@@ -45,7 +45,7 @@ export default class CustomModal extends Component {
   };
 
   render() {
-    const { toggle, onSave,userLists } = this.props;
+    const { toggle, onSave } = this.props;
  
     return (
       <Modal isOpen={true} toggle={toggle}>
