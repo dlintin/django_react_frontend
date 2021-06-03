@@ -17,20 +17,31 @@ export default class CustomModal extends Component {
     super(props);
     this.state = {
       activeItem: this.props.activeItem,
-      userLists : []
+      userLists : [],
+      token : this.props.token
     };
   }
   componentDidMount() {
+   
     this.userList();
   }
 
   userList = () => {
     axios
-      .get("/api/users/")
+      .get("/api/users/",{
+        headers: {
+            'authorization': 'Bearer ' + this.getToken(), 
+        }
+    })
       .then((res) => this.setState({ userLists: res.data }))
       .catch((err) => console.log(err));
       
   };
+  getToken() {
+    const tokenString = sessionStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+    return userToken
+  }
 
   handleChange = (e) => {
     let { name, value } = e.target;

@@ -28,7 +28,7 @@ class App extends Component {
   componentDidMount() {
     const token = this.getToken();
     console.log("a",token)
-  if(!token) {
+  if(!token || token === undefined) {
     this.setState({loginModal : true});
   }else{
     this.refreshList();
@@ -38,7 +38,11 @@ class App extends Component {
 
   refreshList = () => {
     axios
-      .get("/api/todos/")
+      .get("/api/todos/",{
+        headers: {
+            'authorization': 'Bearer ' + this.getToken(), 
+        }
+    })
       .then((res) => this.setState({ todoList: res.data }))
       .catch((err) => console.log(err));
   };
@@ -55,10 +59,9 @@ class App extends Component {
 
     if (item.id) {
       axios
-        .put(`/api/todos/${item.id}/`, item, {
+        .put(`/api/todos/${item.id}/`, item,{
           headers: {
-              'authorization': this.state.token,
-              
+              'authorization': 'Bearer ' + this.getToken(), 
           }
       })
         .then((res) => this.refreshList());
@@ -67,8 +70,7 @@ class App extends Component {
     axios
       .post("/api/todos/", item,{
         headers: {
-            'authorization': this.state.token,
-            
+            'authorization': 'Bearer ' + this.getToken(), 
         }
     })
       .then((res) => this.refreshList());
@@ -76,16 +78,16 @@ class App extends Component {
  
   handleSubmitLogin = (item) => {
     axios
-      .post("/token-auth/", item)
-      .then((res) => this.setToken(res.data.token,res.data.user));
-
-
+      .post("/api/token/", item,)
+      .then((res) => this.setToken(res.data));
   };
-  setToken(userToken,userData) {
-    sessionStorage.setItem('token', JSON.stringify(userToken));
-    sessionStorage.setItem('user', JSON.stringify(userData));
-    this.setState({token : userToken})
-    axios.defaults.headers.common = {'Authorization': `Bearer ${this.state.token}`}
+  async setToken(data) {
+    await sessionStorage.setItem('token', JSON.stringify(data.access));
+    await sessionStorage.setItem('refresh', JSON.stringify(data.refresh));
+    await sessionStorage.setItem('user', JSON.stringify(data.id));
+    this.setState({token : data.access})
+    axios.defaults.headers.common = {'Authorization': `Bearer ${this.getToken()}`,'content-type': 'application/json'}
+    this.refreshList();
     this.loginToggle()
   }
 
@@ -100,8 +102,7 @@ class App extends Component {
     axios
       .delete(`/api/todos/${item.id}/`,{
         headers: {
-            'authorization': this.state.token,
-            
+            'authorization': 'Bearer ' + this.getToken(), 
         }
     })
       .then((res) => this.refreshList());
@@ -208,6 +209,7 @@ class App extends Component {
         {this.state.modal ? (
           <Modal
             activeItem={this.state.activeItem}
+            token={this.state.token}
             toggle={this.toggle}
             onSave={this.handleSubmit}
           />
