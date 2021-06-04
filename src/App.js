@@ -17,6 +17,8 @@ class App extends Component {
         title: "",
         description: "",
         completed: false,
+        asigned_by: "",
+        asigned_to: 0
       },
       login: {
         username: "",
@@ -186,7 +188,9 @@ class App extends Component {
   render() {
     return (
       <main className="container">
-        
+        <div>
+          sadas
+        </div>
         <h1 className="text-white text-uppercase text-center my-4">Todo app</h1>
         <div className="row">
           <div className="col-md-6 col-sm-10 mx-auto p-0">
