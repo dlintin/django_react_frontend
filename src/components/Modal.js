@@ -112,7 +112,7 @@ export default class CustomModal extends Component {
             </FormGroup>
             <FormGroup>
               <Label for="todo-description">Assign To</Label>
-              <Input type="select" name="asigned_to" onChange={this.handleChange} value={this.state.activeItem.asigned_to}id="exampleSelect">
+              <Input type="select" name="assigned_to" onChange={this.handleChange} value={this.state.activeItem.assigned_to}id="exampleSelect">
               {this.state.userLists.map(team => (
             <option
               key={team.id}

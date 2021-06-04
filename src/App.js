@@ -18,7 +18,7 @@ class App extends Component {
         description: "",
         completed: false,
         asigned_by: "",
-        asigned_to: 0
+        assigned_to: 0
       },
       login: {
         username: "",
@@ -79,7 +79,7 @@ class App extends Component {
       return;
     }
     item.asigned_by = this.getUsername()
-    item.asigned_to = parseInt(item.asigned_to)
+    item.assigned_to = parseInt(item.assigned_to)
     axios
       .post("/api/todos/", item,{
         headers: {
@@ -121,7 +121,7 @@ class App extends Component {
   };
 
   createItem = () => {
-    const item = { title: "", description: "", completed: false, asigned_by: "",asigned_to: 0  };
+    const item = { title: "", description: "", completed: false, asigned_by: "",assigned_to: 0  };
 
     this.setState({ activeItem: item, modal: !this.state.modal });
   };
