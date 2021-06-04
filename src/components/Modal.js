@@ -56,6 +56,26 @@ export default class CustomModal extends Component {
     const user = JSON.parse(username);
     return user
   }
+  disableChecker(){
+    const username = sessionStorage.getItem('username');
+    const user = JSON.parse(username);
+    if(this.state.activeItem.asigned_by === user || !this.state.activeItem.id){
+      return false
+    }else {
+      return true
+    }
+  }
+  disableCheckerCompleted(){
+    const username = sessionStorage.getItem('username');
+    const userId = sessionStorage.getItem('userId');
+    const user = JSON.parse(username);
+    if(this.state.activeItem.asigned_by === user || !this.state.activeItem.id ||this.state.activeItem.assigned_to === userId){
+      return false
+    }else {
+      return true
+    }
+  }
+  
 
   handleChange = (e) => {
     let { name, value } = e.target;
@@ -83,6 +103,7 @@ export default class CustomModal extends Component {
                 type="text"
                 id="todo-title"
                 name="title"
+                disabled={this.disableChecker()}
                 value={this.state.activeItem.title}
                 onChange={this.handleChange}
                 placeholder="Enter Todo Title"
@@ -94,6 +115,7 @@ export default class CustomModal extends Component {
                 type="text"
                 id="todo-description"
                 name="description"
+                disabled={this.disableChecker()}
                 value={this.state.activeItem.description}
                 onChange={this.handleChange}
                 placeholder="Enter Todo description"
@@ -105,6 +127,7 @@ export default class CustomModal extends Component {
                 type="date"
                 id="todo-date"
                 name="date"
+                disabled={this.disableChecker()}
                 value={this.state.activeItem.date}
                 onChange={this.handleChange}
                 placeholder="dd/mm/yy"
@@ -113,6 +136,7 @@ export default class CustomModal extends Component {
             <FormGroup>
               <Label for="todo-description">Assign To</Label>
               <Input type="select" name="assigned_to" onChange={this.handleChange} value={this.state.activeItem.assigned_to}id="exampleSelect">
+                <option>a</option>
               {this.state.userLists.map(team => (
             <option
               key={team.id}
@@ -128,6 +152,7 @@ export default class CustomModal extends Component {
               <Label check>
                 <Input
                   type="checkbox"
+                  disabled={this.disableCheckerCompleted()}
                   name="completed"
                   checked={this.state.activeItem.completed}
                   onChange={this.handleChange}

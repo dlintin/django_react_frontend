@@ -98,6 +98,7 @@ class App extends Component {
     await sessionStorage.setItem('token', JSON.stringify(data.access));
     await sessionStorage.setItem('refresh', JSON.stringify(data.refresh));
     await sessionStorage.setItem('username', JSON.stringify(data.username));
+    await sessionStorage.setItem('userId', JSON.stringify(data.id));
     this.setState({token : data.access})
     this.refreshList();
     this.loginToggle()
