@@ -27,6 +27,7 @@ export default class CustomModal extends Component {
   }
 
   userList = () => {
+    // console.log("assigned by", this.state.activeItem.asigned_by)
     axios
       .get("/api/users/",{
         headers: {
@@ -41,6 +42,11 @@ export default class CustomModal extends Component {
     const tokenString = sessionStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
     return userToken
+  }
+  getUsername(){
+    const username = sessionStorage.getItem('username');
+    const user = JSON.parse(username);
+    return user
   }
 
   handleChange = (e) => {
@@ -60,7 +66,7 @@ export default class CustomModal extends Component {
  
     return (
       <Modal isOpen={true} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Todo Item</ModalHeader>
+        <ModalHeader toggle={toggle}>Todo Item (Assigned By : {this.state.activeItem.asigned_by === null || this.state.activeItem.asigned_by === "" ?  this.getUsername() : this.state.activeItem.asigned_by })</ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>
@@ -98,11 +104,11 @@ export default class CustomModal extends Component {
             </FormGroup>
             <FormGroup>
               <Label for="todo-description">Assign To</Label>
-              <Input type="select" name="select" id="exampleSelect">
+              <Input type="select" name="asigned_to" onChange={this.handleChange} value={this.state.activeItem.asigned_to}id="exampleSelect">
               {this.state.userLists.map(team => (
             <option
               key={team.id}
-              value={team.username}
+              value={team.id}
             >
               {team.username}
             </option>

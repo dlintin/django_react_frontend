@@ -48,6 +48,11 @@ class App extends Component {
       .then((res) => this.setState({ todoList: res.data }))
       .catch((err) => console.log(err));
   };
+  getUsername(){
+    const username = sessionStorage.getItem('username');
+    const user = JSON.parse(username);
+    return user
+  }
 
   toggle = () => {
     this.setState({ modal: !this.state.modal });
@@ -73,6 +78,8 @@ class App extends Component {
         .then((res) => this.refreshList());
       return;
     }
+    item.asigned_by = this.getUsername()
+    item.asigned_to = parseInt(item.asigned_to)
     axios
       .post("/api/todos/", item,{
         headers: {
@@ -90,9 +97,8 @@ class App extends Component {
   async setToken(data) {
     await sessionStorage.setItem('token', JSON.stringify(data.access));
     await sessionStorage.setItem('refresh', JSON.stringify(data.refresh));
-    await sessionStorage.setItem('user', JSON.stringify(data.id));
+    await sessionStorage.setItem('username', JSON.stringify(data.username));
     this.setState({token : data.access})
-    axios.defaults.headers.common = {'Authorization': `Bearer ${this.getToken()}`,'content-type': 'application/json'}
     this.refreshList();
     this.loginToggle()
   }
@@ -192,7 +198,7 @@ class App extends Component {
   render() {
     return (
       <main className="container">
-        <div class="row">
+        <div className="row">
          <h3>Welcome</h3>    <button
             className="btn btn-danger"
             onClick={() => this.logout()}
