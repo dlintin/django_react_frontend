@@ -43,6 +43,14 @@ export default class CustomModal extends Component {
     const userToken = JSON.parse(tokenString);
     return userToken
   }
+  checkUser() {
+    const username = sessionStorage.getItem('username');
+    if( username === "admin"){
+      return false
+    }else {
+      return true
+    }
+  }
   getUsername(){
     const username = sessionStorage.getItem('username');
     const user = JSON.parse(username);
@@ -108,6 +116,7 @@ export default class CustomModal extends Component {
               {this.state.userLists.map(team => (
             <option
               key={team.id}
+              disabled={team.is_superuser && this.checkUser() }
               value={team.id}
             >
               {team.username}
