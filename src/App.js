@@ -64,6 +64,12 @@ class App extends Component {
     sessionStorage.clear();
     window.location.reload()
   }
+  getUserId(){
+    const id = sessionStorage.getItem('userId')
+    const user = JSON.parse(id);
+ 
+    return user
+  }
 
   handleSubmit = (item) => {
     this.toggle();
@@ -80,6 +86,10 @@ class App extends Component {
     }
     item.asigned_by = this.getUsername()
     item.assigned_to = parseInt(item.assigned_to)
+    if (item.assigned_to === 0 ) {
+      item.assigned_to = this.getUserId()
+
+    }
     axios
       .post("/api/todos/", item,{
         headers: {

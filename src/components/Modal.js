@@ -43,13 +43,28 @@ export default class CustomModal extends Component {
     const userToken = JSON.parse(tokenString);
     return userToken
   }
-  checkUser() {
+  checkUser(superUser) {
+    
     const username = sessionStorage.getItem('username');
-    if( username === "admin"){
+    console.log("superuser",superUser,username)
+    if(superUser && username ==="admin"){
+      return false
+    }
+    if(superUser === true && username === "admin"){
       return false
     }else {
-      return true
+      if(superUser === true && username !== "admin"){
+        return true
+      }else{
+        return false
+      }
     }
+  }
+  getUserId(){
+    const id = sessionStorage.getItem('userId')
+    const user = JSON.parse(id);
+    console.log("USER",user)
+    return user
   }
   getUsername(){
     const username = sessionStorage.getItem('username');
@@ -127,7 +142,7 @@ export default class CustomModal extends Component {
                 type="date"
                 id="todo-date"
                 name="date"
-                disabled={this.disableChecker()}
+                disabled={this.disableChecker}
                 value={this.state.activeItem.date}
                 onChange={this.handleChange}
                 placeholder="dd/mm/yy"
@@ -136,11 +151,11 @@ export default class CustomModal extends Component {
             <FormGroup>
               <Label for="todo-description">Assign To</Label>
               <Input type="select" name="assigned_to" onChange={this.handleChange} value={this.state.activeItem.assigned_to}id="exampleSelect">
-                <option>a</option>
+                <option value={this.getUserId()}>--Choose a User--</option>
               {this.state.userLists.map(team => (
             <option
               key={team.id}
-              disabled={team.is_superuser && this.checkUser() }
+              disabled={ this.checkUser(team.is_superuser) }
               value={team.id}
             >
               {team.username}
