@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Modal from "./components/Modal";
 import LoginModal from "./components/LoginModal"
 import axios from "axios";
-axios.defaults.baseURL = 'https://dlintin-django-react-backend.zeet.app';
+axios.defaults.baseURL = 'https://andikaherup-django-react-backend.zeet.app/';
 
 class App extends Component {
   constructor(props) {
@@ -55,6 +55,10 @@ class App extends Component {
   loginToggle = () => {
     this.setState({ loginModal: !this.state.loginModal });
   };
+  logout(){
+    sessionStorage.clear();
+    window.location.reload()
+  }
 
   handleSubmit = (item) => {
     this.toggle();
@@ -111,7 +115,7 @@ class App extends Component {
   };
 
   createItem = () => {
-    const item = { title: "", description: "", completed: false };
+    const item = { title: "", description: "", completed: false, asigned_by: "",asigned_to: 0  };
 
     this.setState({ activeItem: item, modal: !this.state.modal });
   };
@@ -188,8 +192,13 @@ class App extends Component {
   render() {
     return (
       <main className="container">
-        <div>
-          sadas
+        <div class="row">
+         <h3>Welcome</h3>    <button
+            className="btn btn-danger"
+            onClick={() => this.logout()}
+          >
+            Logout
+          </button>
         </div>
         <h1 className="text-white text-uppercase text-center my-4">Todo app</h1>
         <div className="row">
