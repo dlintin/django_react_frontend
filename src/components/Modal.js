@@ -45,19 +45,16 @@ export default class CustomModal extends Component {
   }
   checkUser(superUser) {
     
-    const username = sessionStorage.getItem('username');
-    console.log("superuser",superUser,username)
-    if(superUser && username ==="admin"){
+    const myUsername = sessionStorage.getItem('userId');
+    // console.log(myUsername === "1")
+    if(myUsername === "1"){
       return false
     }
-    if(superUser === true && username === "admin"){
+    if(myUsername !== "1" && !superUser){
       return false
-    }else {
-      if(superUser === true && username !== "admin"){
-        return true
-      }else{
-        return false
-      }
+    }
+    if(myUsername !== "1" && superUser){
+      return true
     }
   }
   getUserId(){
@@ -73,18 +70,27 @@ export default class CustomModal extends Component {
   }
   disableChecker(){
     const username = sessionStorage.getItem('username');
+    const id = sessionStorage.getItem('userId');
     const user = JSON.parse(username);
-    if(this.state.activeItem.asigned_by === user || !this.state.activeItem.id){
+    // false (not disabled ) condition  :
+    // 1. user to other user
+    // 2. admin to other user
+    // 3. admin to admin
+    // console.log("assigned by", this.state.activeItem.asigned_by, 'user',user)
+    if(id === "1" ||this.state.activeItem.asigned_by === user || !this.state.activeItem.id || this.state.activeItem.asigned_by ===id){
       return false
     }else {
       return true
     }
   }
   disableCheckerCompleted(){
+
     const username = sessionStorage.getItem('username');
     const userId = sessionStorage.getItem('userId');
     const user = JSON.parse(username);
-    if(this.state.activeItem.asigned_by === user || !this.state.activeItem.id ||this.state.activeItem.assigned_to === userId){
+    // console.log("username",user,"to", this.state.activeItem.assigned_to ,"By", this.state.activeItem.asigned_by)
+    //only available for the one who have been assigned to and the one who assign the task if it is in edit mode
+    if(userId === "1"|| this.state.activeItem.asigned_by === user || !this.state.activeItem.id ||this.state.activeItem.assigned_to === parseInt(userId)){
       return false
     }else {
       return true
@@ -105,7 +111,7 @@ export default class CustomModal extends Component {
   };
 
   render() {
-    const { toggle, onSave } = this.props;
+    const { toggle, onSave,onDelete } = this.props;
  
     return (
       <Modal isOpen={true} toggle={toggle}>
@@ -142,7 +148,7 @@ export default class CustomModal extends Component {
                 type="date"
                 id="todo-date"
                 name="date"
-                disabled={this.disableChecker}
+                disabled={this.disableChecker()}
                 value={this.state.activeItem.date}
                 onChange={this.handleChange}
                 placeholder="dd/mm/yy"
@@ -150,9 +156,17 @@ export default class CustomModal extends Component {
             </FormGroup>
             <FormGroup>
               <Label for="todo-description">Assign To</Label>
-              <Input type="select" name="assigned_to" onChange={this.handleChange} value={this.state.activeItem.assigned_to}id="exampleSelect">
-                <option value={this.getUserId()}>--Choose a User--</option>
-              {this.state.userLists.map(team => (
+              <Input type="select" name="assigned_to" onChange={this.handleChange} disabled={this.disableChecker()} value={this.state.activeItem.assigned_to}id="exampleSelect" placeholder={this.state.activeItem.assigned_to}>
+               
+              {this.state.userLists.map(team => ( team.id === this.state.activeItem.assigned_to ? 
+              [ <option selected disabled hidden >{team.username}</option> ,
+               <option
+               key={team.id}
+               disabled={ this.checkUser(team.is_superuser) }
+               value={team.id}
+             >
+               {team.username}
+             </option> ]:
             <option
               key={team.id}
               disabled={ this.checkUser(team.is_superuser) }
@@ -184,6 +198,13 @@ export default class CustomModal extends Component {
           >
             Save
           </Button>
+          <button
+            className="btn btn-danger"
+            disabled={this.disableChecker()}
+            onClick={() => onDelete(this.state.activeItem)}
+          >
+            Delete
+          </button>
         </ModalFooter>
       </Modal>
     );

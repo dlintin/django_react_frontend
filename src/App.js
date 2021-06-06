@@ -122,6 +122,7 @@ class App extends Component {
   }
 
   handleDelete = (item) => {
+    this.toggle();
     axios
       .delete(`/api/todos/${item.id}/`,{
         headers: {
@@ -193,14 +194,14 @@ class App extends Component {
             className="btn btn-secondary mr-2"
             onClick={() => this.editItem(item)}
           >
-            Edit
+            View Task
           </button>
-          <button
+          {/* <button
             className="btn btn-danger"
             onClick={() => this.handleDelete(item)}
           >
             Delete
-          </button>
+          </button> */}
         </span>
       </li>
     ));
@@ -242,6 +243,7 @@ class App extends Component {
             token={this.state.token}
             toggle={this.toggle}
             onSave={this.handleSubmit}
+            onDelete={this.handleDelete}
           />
         ) : null}
         {this.state.loginModal ? (
