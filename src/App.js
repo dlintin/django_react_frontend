@@ -210,8 +210,8 @@ class App extends Component {
   render() {
     return (
       <main className="container">
-        <div className="row">
-         <h3>Welcome</h3>    <button
+        <div className="row" style={{display:"flex",justifyContent:"space-between"}}>
+         <h3>Welcome <span style={{color:"Gray"}}>{this.getUsername()}</span></h3>    <button
             className="btn btn-danger"
             onClick={() => this.logout()}
           >
